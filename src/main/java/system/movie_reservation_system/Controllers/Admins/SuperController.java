@@ -1,13 +1,13 @@
-package system.movie_reservation_system.Controllers;
+package system.movie_reservation_system.Controllers.Admins;
 
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
-import system.movie_reservation_system.Entity.AppUser;
+import system.movie_reservation_system.Entities.AppUserEntity.AppUser;
 import system.movie_reservation_system.Security.JwtUtil;
-import system.movie_reservation_system.Services.DevService;
+import system.movie_reservation_system.Services.AdminServices.DevService;
 
 import java.util.List;
 

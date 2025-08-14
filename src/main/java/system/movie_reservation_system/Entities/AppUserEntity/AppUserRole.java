@@ -1,4 +1,4 @@
-package system.movie_reservation_system.Entity;
+package system.movie_reservation_system.Entities.AppUserEntity;
 
 public enum AppUserRole {
     ROLE_USER,
