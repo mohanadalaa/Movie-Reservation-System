@@ -16,6 +16,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Component
 public class JwtUtil {
@@ -30,10 +31,11 @@ public class JwtUtil {
     }
 
     public String generateToken(AppUser userDetails) {
+
         long now = System.currentTimeMillis();
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
-                .claim("email",userDetails.getEmail() )
+                .claim("id", userDetails.getPublicId())
                 .claim("roles", userDetails.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .collect(Collectors.toList()))
@@ -42,8 +44,17 @@ public class JwtUtil {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
+    public UUID extractPublicUserId(String token) {
+        String publicIdString = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("id", String.class);
+        return UUID.fromString(publicIdString);
+    }
 
-    // Add this new method to extract authorities
+
     public List<GrantedAuthority> extractAuthorities(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -58,15 +69,6 @@ public class JwtUtil {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
-    public String extractEmail(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("email", String.class);
-    }
-
     public String extractUsername(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build()
                 .parseClaimsJws(token).getBody().getSubject();
@@ -79,13 +81,5 @@ public class JwtUtil {
         } catch (JwtException e) {
             return false;
         }
-    }
-
-    private Claims parseClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
     }
 }

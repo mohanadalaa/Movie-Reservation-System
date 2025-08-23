@@ -1,13 +1,17 @@
-package system.movie_reservation_system.Exception;
+package system.movie_reservation_system.Entities.ShowTimes;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import system.movie_reservation_system.Entities.MovieEntity.Movie;
+import system.movie_reservation_system.Entities.Reservations.Reservation;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "showtimes")
@@ -15,25 +19,38 @@ import java.time.LocalDateTime;
 public class Showtime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "showtime_id")
+    private Long showtimeId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "movie_id", nullable = false)
-    @JsonBackReference
+    @JsonIgnoreProperties("showtimes")
     private Movie movie;
 
-    @Column(nullable = false)
-    private LocalDateTime startTime;
+    @Column(name="day_date",nullable = true)
+    private String date;
+
+    @Column(name="start_time",nullable = true)
+    private String startTime;
+
+    @Column(name="end_time",nullable = true)
+    @JsonIgnore
+    private String endTime;
 
     @Column(nullable = false)
-    private LocalDateTime endTime;
+    private long ticketPrice;
 
-    @Column(nullable = false)
-    private BigDecimal ticketPrice;
+    @Column(name = "capacity")
+    private int capacity;
 
-    public void calculateEndTime() {
-        if (movie != null && startTime != null) {
-            this.endTime = startTime.plusMinutes(movie.getDurationMinutes());
-        }
-    }
+    @Column(name = "occupied_capacity")
+    private int occupiedCapacity;
+
+    @Column(name = "hall_id")
+    private int hallNumber;
+
+    @OneToMany(mappedBy = "showtime", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Reservation> reservations = new ArrayList<>();
+
 }

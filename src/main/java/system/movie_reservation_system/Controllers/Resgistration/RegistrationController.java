@@ -13,6 +13,7 @@ import system.movie_reservation_system.Services.RegistrationService.Registration
 import system.movie_reservation_system.Services.UserServices.UserService;
 
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")

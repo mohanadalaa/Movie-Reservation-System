@@ -22,10 +22,15 @@ public class SuperController {
     private final JwtUtil jwtUtil;
     private final DevService devService;
 
-    // POST  http://localhost:8080/api/dev/promote/user
-    @PostMapping("/promote/user")
+    // POST  http://localhost:8080/api/dev/user/promote
+    @PostMapping("/user/promote")
     public void promoteUserToAdmin(@RequestParam String username){
         devService.promoteToAdmin(username);
+    }
+    // POST  http://localhost:8080/api/dev/user/delete
+    @PostMapping("/user/delete")
+    public void deleteUserOrAdmin(@RequestParam String username){
+        devService.deleteUserOrAdmin(username);
     }
 
     // GET  http://localhost:8080/api/dev/admins

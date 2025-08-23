@@ -6,6 +6,7 @@ import system.movie_reservation_system.Entities.AppUserEntity.AppUserRole;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<AppUser, Long> {
     Optional<AppUser> findByUsername(String username);
@@ -13,5 +14,6 @@ public interface UserRepository extends JpaRepository<AppUser, Long> {
     List<AppUser> findByRole(AppUserRole role);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
-    AppUser getAppUserByUsername(String username);
+    boolean existsByPublicId(UUID id);
+    Optional<AppUser> findByPublicId(UUID id);
 }

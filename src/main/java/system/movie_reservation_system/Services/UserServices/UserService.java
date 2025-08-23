@@ -9,6 +9,8 @@ import system.movie_reservation_system.Entities.AppUserEntity.AppUserRole;
 import system.movie_reservation_system.Repositories.UserRepository;
 import system.movie_reservation_system.Exception.ResourceNotFoundException;
 
+import java.util.UUID;
+
 
 @Service
 @RequiredArgsConstructor
@@ -18,12 +20,17 @@ public class UserService   {
     private final PasswordEncoder passwordEncoder;
     private final DatabaseService databaseService;
 
-    public AppUser getAppUserByEmail(String email) {
+    public AppUser getAppUserByEmail(String email){
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User With Email "+email+" Not Found"));
     }
+    public AppUser getAppUserById(UUID id){
+        return userRepository.findByPublicId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
+    }
+
     @Transactional
-    public void deleteAppUserByEmailWithPasswordVerification(String email,String password){
+    public String deleteAppUserByEmailWithPasswordVerification(String email,String password){
         AppUser user = getAppUserByEmail(email);
         if (user.getRole().equals(AppUserRole.ROLE_DEV)) {
             throw new ResourceNotFoundException("It Cant Happen Lil DEV");
@@ -33,5 +40,6 @@ public class UserService   {
             throw new ResourceNotFoundException("Invalid Credentials - Deletion Failed");
         }
         userRepository.delete(user);
+        return user.getUsername();
     }
 }

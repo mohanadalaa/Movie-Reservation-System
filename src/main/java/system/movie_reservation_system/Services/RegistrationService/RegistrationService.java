@@ -11,6 +11,9 @@ import system.movie_reservation_system.Entities.AppUserEntity.AppUser;
 import system.movie_reservation_system.Entities.AppUserEntity.AppUserRole;
 import system.movie_reservation_system.Exception.ResourceNotFoundException;
 import system.movie_reservation_system.Repositories.UserRepository;
+
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 

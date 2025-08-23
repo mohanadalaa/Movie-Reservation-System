@@ -35,4 +35,11 @@ public class DevService {
     public List<AppUser> getAllDb() {
         return userRepository.findAll();
     }
+
+    @Transactional
+    public void deleteUserOrAdmin(String username) {
+        AppUser appUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User Not Found With Username: " + username));
+        userRepository.delete(appUser);
+    }
 }
