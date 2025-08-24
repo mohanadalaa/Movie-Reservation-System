@@ -13,33 +13,10 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/user/reservation")
+@RequestMapping("/api/admin/reservation")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN', 'ROLE_DEV')")
+@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DEV')")
 public class AdminReservationController {
-    private final ReservationService service;
-    private final JwtUtil jwtUtil;
-    private final UserService userService;
 
-    @PostMapping("/confrim")
-    public Reservation test(@RequestHeader("Authorization") String authHeader,
-                            @RequestParam String title,
-                            @RequestParam String party,
-                            @RequestParam String seat
-                            ) {
-        String token = authHeader.replace("Bearer ", "");
-        UUID id = jwtUtil.extractPublicUserId(token);
-        AppUser user = userService.getAppUserById(id);
-
-        return service.saveReservation(user,title,party,seat);
-    }
-
-    @GetMapping("/res")
-    public List<Reservation> getUserReservations(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        UUID id = jwtUtil.extractPublicUserId(token);
-        AppUser user = userService.getAppUserById(id);
-        return user.getReservations();
-    }
 
 }

@@ -15,7 +15,7 @@ import java.util.Map;
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DEV')")
-public class ShowtimeController {
+public class AdminShowtimeController {
     private final ShowtimeService showtimeService;
 
     @PostMapping("/showtime")
@@ -46,7 +46,7 @@ public class ShowtimeController {
         return showtimeService.getShowTimesByDateAndHallId(date,hallId);
     }
 
-    @DeleteMapping("/showtimes/{id}")
+    @DeleteMapping("/showtime/{id}")
     public Map<String, Object> deleteShowtime(@PathVariable long id){
         Showtime showtime = showtimeService.deleteShowTime(id);
         return new ResponseMap.Builder()

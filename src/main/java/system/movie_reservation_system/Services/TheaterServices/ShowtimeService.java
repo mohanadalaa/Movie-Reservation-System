@@ -7,6 +7,8 @@ import system.movie_reservation_system.Entities.ShowTimes.Showtime;
 import system.movie_reservation_system.Exception.ResourceNotFoundException;
 import system.movie_reservation_system.Repositories.ShowtimeRepository;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -72,5 +74,12 @@ public class ShowtimeService {
 
     public List<Showtime> getShowTimesByDateAndHallId(String date, int hallId) {
         return repository.getShowtimesByDateAndHallNumber(date,hallId);
+    }
+
+    public List<Showtime> getShowTimesByMovieTitle(String movieTitle) {
+        Movie movie = movieService.findMovieByTitle(movieTitle);
+        LocalDate today = LocalDate.now();
+        String formattedDate = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return repository.findByMovieAndDateGreaterThanEqual(movie,formattedDate);
     }
 }
