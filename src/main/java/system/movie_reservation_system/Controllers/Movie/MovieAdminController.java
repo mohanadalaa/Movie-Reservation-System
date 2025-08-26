@@ -13,14 +13,13 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admin/movies")
 @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DEV')")
 @RequiredArgsConstructor
 public class MovieAdminController {
     private final MovieService movieService;
 
-    // POST http://localhost:8080/api/admin/movie/add
-    @PostMapping("/movie/add")
+    @PostMapping
     public Map<String, Object> addMovie(@RequestParam String title,
                           @RequestParam String description,
                           @RequestParam String genre,
@@ -38,34 +37,12 @@ public class MovieAdminController {
                 .build().getResponse();
     }
 
-    // POST http://localhost:8080/api/admin/movie/add
-    @PostMapping("/movie/showtime/add")
-    public Map<String, Object> addShowtimeToMovie(@RequestParam String title,
-                                        @RequestParam String description,
-                                        @RequestParam String genre,
-                                        @RequestParam String duration,
-                                        @RequestParam String posterUrl){
-        Movie movie=movieService.createMovie(title,description,genre,duration,posterUrl);
-        return new ResponseMap.Builder()
-                .status("Movie Added Successfully")
-                .timestamp()
-                .add("title", title)
-                .add("description",description)
-                .add("genre",genre)
-                .add("duration",duration)
-                .add("posterUrl",movie.getPosterUrl())
-                .build().getResponse();
-    }
-
-
-    // GET http://localhost:8080/api/admin/movie/{title}
-    @GetMapping("/movie/{title}")
+    @GetMapping("/{title}")
     public Movie getMovie(@PathVariable String title) {
         return movieService.findMovieByTitle(title);
     }
 
-    // DELETE http://localhost:8080/api/admin/movie/{title}
-    @DeleteMapping("/movie/{title}")
+    @DeleteMapping("/{title}")
     public Map<String, Object> deleteMovie(@PathVariable String title) {
         movieService.deleteMovieByTitle(title);
         return new ResponseMap.Builder()
@@ -75,15 +52,13 @@ public class MovieAdminController {
                 .add("title", title)
                 .build().getResponse();
     }
-    // GET http://localhost:8080/api/admin/movie/genre/{genre}
-    @GetMapping("/movie/genre/{genre}")
+    @GetMapping("/genre/{genre}")
     public List<Movie> getMoviesByGenre(@PathVariable String genre) {
         Genre genreEnum = Genre.valueOf(genre.toUpperCase());
         return movieService.getMoviesByGenre(genreEnum);
     }
 
-    // PATCH http://localhost:8080/api/admin/movie/{title}
-    @PatchMapping("/movie/{title}")
+    @PatchMapping("/{title}")
     public Map<String, Object> updateMoviePartial(@PathVariable String title, @RequestBody Map<String, Object> updates) {
         Movie updatedMovie = movieService.partialUpdate(title, updates);
         return new ResponseMap.Builder()

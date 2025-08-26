@@ -2,7 +2,9 @@ package system.movie_reservation_system.Services.TheaterServices;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import system.movie_reservation_system.Entities.MovieEntity.Movie;
+import system.movie_reservation_system.Entities.ShowTimes.Seat;
 import system.movie_reservation_system.Entities.ShowTimes.Showtime;
 import system.movie_reservation_system.Exception.ResourceNotFoundException;
 import system.movie_reservation_system.Repositories.ShowtimeRepository;
@@ -17,12 +19,14 @@ import java.util.List;
 public class ShowtimeService {
     private final ShowtimeRepository repository;
     private final MovieService movieService;
+    private final SeatService seatService;
 
 
     public boolean hallNotEmpty(String dateTime,int hallNumber, String date){
         return repository.existsByStartTimeAndHallNumberAndDate(dateTime,hallNumber,date);
     }
 
+    @Transactional
     public Showtime createShowtime(String movieTitle,
                                    String date,
                                    String startTime,
@@ -53,6 +57,15 @@ public class ShowtimeService {
         showtime.setStartTime(startTime);
         showtime.setEndTime(null);
         showtime.setOccupiedCapacity(0);
+
+        List<Seat> seats = seatService.generateSeatsForShowtime(showtime, showtime.getCapacity());
+        showtime.setSeats(seats);
+
+        return repository.save(showtime);
+    }
+    @Transactional
+    public Showtime saveShowtime(Showtime showtime)
+    {
         return repository.save(showtime);
     }
     public Showtime deleteShowTime(Long showTimeId){
@@ -81,5 +94,14 @@ public class ShowtimeService {
         LocalDate today = LocalDate.now();
         String formattedDate = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         return repository.findByMovieAndDateGreaterThanEqual(movie,formattedDate);
+    }
+
+    public List<Showtime> getShowTimesByMovieTitleAtSpecificDate(String movieTitle, String date) {
+        Movie movie = movieService.findMovieByTitle(movieTitle);
+        return repository.getShowtimesByMovieAndDate(movie,date);
+    }
+
+    public List<Seat> getAvailableSeats(Long showtimeId) {
+        return null;
     }
 }

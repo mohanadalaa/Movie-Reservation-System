@@ -21,25 +21,34 @@ public class DevService {
     }
 
     @Transactional
-    public void promoteToAdmin(String username) {
-        AppUser appUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User Not Found With Username: " + username));
+    public AppUser promoteToAdmin(long userId) {
+        AppUser appUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User Not Found With Id: " + userId));
 
         if (appUser.getRole() == AppUserRole.ROLE_ADMIN) {
-            throw new ResourceNotFoundException(username + " Is Already An Admin");
+            throw new ResourceNotFoundException(appUser.getUsername() + " Is Already An Admin");
         }
         appUser.setRole(AppUserRole.ROLE_ADMIN);
-        userRepository.save(appUser);
+       return userRepository.save(appUser);
     }
-
-    public List<AppUser> getAllDb() {
-        return userRepository.findAll();
-    }
-
     @Transactional
-    public void deleteUserOrAdmin(String username) {
-        AppUser appUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User Not Found With Username: " + username));
+    public void deleteUserOrAdmin(long userId) {
+        AppUser appUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User Not Found With ID: " + userId));
+        if (appUser.getRole().equals(AppUserRole.ROLE_DEV)){
+              throw new ResourceNotFoundException("Invalid Move Smart.....");
+        }
         userRepository.delete(appUser);
+    }
+
+    public AppUser demoteToUser(long userId) {
+        AppUser appUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User Not Found With Id: " + userId));
+
+        if (appUser.getRole() == AppUserRole.ROLE_USER) {
+            throw new ResourceNotFoundException(appUser.getUsername() + " Is Already A User");
+        }
+        appUser.setRole(AppUserRole.ROLE_USER);
+        return userRepository.save(appUser);
     }
 }

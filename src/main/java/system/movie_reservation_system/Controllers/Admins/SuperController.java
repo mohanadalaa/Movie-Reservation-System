@@ -3,46 +3,45 @@ package system.movie_reservation_system.Controllers.Admins;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 import system.movie_reservation_system.Entities.AppUserEntity.AppUser;
-import system.movie_reservation_system.Security.JwtUtil;
+import system.movie_reservation_system.Exception.ResponseMap;
 import system.movie_reservation_system.Services.AdminServices.DevService;
 
 import java.util.List;
+import java.util.Map;
 
-//Admins Only Controller
 @RestController
-@RequestMapping("/api/dev")
+@RequestMapping("/api/dev/admin")
 @PreAuthorize("hasRole('ROLE_DEV')")
 @RequiredArgsConstructor
 public class SuperController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
     private final DevService devService;
 
-    // POST  http://localhost:8080/api/dev/user/promote
-    @PostMapping("/user/promote")
-    public void promoteUserToAdmin(@RequestParam String username){
-        devService.promoteToAdmin(username);
+    //  http://localhost:8080/api/dev/admin/promote/{user_id}
+    @PostMapping("/promote/{user_id}")
+    public AppUser promoteUserToAdmin(@PathVariable long user_id){
+        return devService.promoteToAdmin(user_id);
     }
-    // POST  http://localhost:8080/api/dev/user/delete
-    @PostMapping("/user/delete")
-    public void deleteUserOrAdmin(@RequestParam String username){
-        devService.deleteUserOrAdmin(username);
+    //  http://localhost:8080/api/dev/admin/demote/{user_id}
+    @PostMapping("/demote/{user_id}")
+    public AppUser demoteUserToAdmin(@PathVariable long user_id){
+        return devService.demoteToUser(user_id);
     }
-
-    // GET  http://localhost:8080/api/dev/admins
-    @GetMapping("/admins")
+    //  http://localhost:8080/api/dev/admin/{user_id}
+    @DeleteMapping("/{user_id}")
+    public Map<String, Object> deleteUserOrAdmin(@PathVariable long user_id){
+        devService.deleteUserOrAdmin(user_id);
+        return new ResponseMap.Builder()
+                .status("Admin Has Been Deleted Successfully")
+                .timestamp()
+                .build().getResponse();
+    }
+    //  http://localhost:8080/api/dev/admin
+    @GetMapping
     public List<AppUser> getAdmins(){
         return devService.getAdmins();
-    }
-
-    // GET  http://localhost:8080/api/dev/db
-    @GetMapping("/db")
-    public List<AppUser> getAll(){
-        return devService.getAllDb();
     }
 
 

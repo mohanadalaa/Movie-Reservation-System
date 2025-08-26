@@ -4,6 +4,7 @@ package system.movie_reservation_system.Entities.ShowTimes;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonMerge;
 import jakarta.persistence.*;
 import lombok.Data;
 import system.movie_reservation_system.Entities.MovieEntity.Movie;
@@ -41,9 +42,11 @@ public class Showtime {
     private long ticketPrice;
 
     @Column(name = "capacity")
+    @JsonIgnore
     private int capacity;
 
     @Column(name = "occupied_capacity")
+    @JsonIgnore
     private int occupiedCapacity;
 
     @Column(name = "hall_id")
@@ -52,5 +55,8 @@ public class Showtime {
     @OneToMany(mappedBy = "showtime", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Reservation> reservations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "showtime", cascade = CascadeType.ALL)
+    private List<Seat> seats;
 
 }

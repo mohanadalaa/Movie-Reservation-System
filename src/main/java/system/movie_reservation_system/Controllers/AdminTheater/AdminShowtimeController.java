@@ -1,4 +1,4 @@
-package system.movie_reservation_system.Controllers.Theater;
+package system.movie_reservation_system.Controllers.AdminTheater;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admin/showtimes")
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DEV')")
 public class AdminShowtimeController {
@@ -29,24 +29,25 @@ public class AdminShowtimeController {
         return showtimeService.createShowtime(title, date,startTime, ticketPrice,capacity,hall);
     }
 
-    @GetMapping("/showtime/{id}")
+    @GetMapping("/{id}")
     public Showtime getShowtime(@PathVariable long id){
         return showtimeService.getShowTimeById(id);
     }
-    @GetMapping("/showtimes")
+    @GetMapping
     public List<Showtime> getAllShowTimes(){
         return showtimeService.getShowTimes();
     }
-    @GetMapping("/showtimes/{date}")
+    @GetMapping("/{date}")
     public List<Showtime> getShowTimesByDate(@PathVariable String date){
         return showtimeService.getShowTimesByDate(date);
     }
-    @GetMapping("/showtimes/{date}/{hallId}")
+
+    @GetMapping("/{date}/{hallId}")
     public List<Showtime> getShowTimesByDateAndHall(@PathVariable String date,@PathVariable int hallId){
         return showtimeService.getShowTimesByDateAndHallId(date,hallId);
     }
 
-    @DeleteMapping("/showtime/{id}")
+    @DeleteMapping("/{id}")
     public Map<String, Object> deleteShowtime(@PathVariable long id){
         Showtime showtime = showtimeService.deleteShowTime(id);
         return new ResponseMap.Builder()

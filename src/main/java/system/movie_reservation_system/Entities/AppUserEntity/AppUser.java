@@ -1,6 +1,7 @@
 package system.movie_reservation_system.Entities.AppUserEntity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonMerge;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -23,11 +24,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = "reservations")        // Don't include reservations in toString()
+@EqualsAndHashCode(exclude = "reservations")
 public class AppUser implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
 
     @Column(unique = true,
@@ -59,7 +61,7 @@ public class AppUser implements UserDetails {
     private AppUserRole role = AppUserRole.ROLE_USER;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonMerge
+    @JsonManagedReference
     private List<Reservation> reservations = new ArrayList<>();
 
 

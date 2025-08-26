@@ -13,7 +13,7 @@ import system.movie_reservation_system.Services.RegistrationService.Registration
 import system.movie_reservation_system.Services.UserServices.UserService;
 
 import java.util.Map;
-import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/api")
@@ -25,7 +25,8 @@ public class RegistrationController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
-    @PostMapping("/register")
+    //  http://localhost:8080/api/signup
+    @PostMapping("/signup")
     public Map<String, Object> register(@RequestParam String username,
                                         @RequestParam String email,
                                         @RequestParam String password) {
@@ -38,6 +39,7 @@ public class RegistrationController {
                 .build().getResponse();
     }
 
+    //  http://localhost:8080/api/login
     @PostMapping("/login")
     public  Map<String, Object> login(@RequestParam String email,
                                       @RequestParam String password,

@@ -1,6 +1,8 @@
 package system.movie_reservation_system.Entities.Reservations;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonMerge;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -13,7 +15,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-
 public class Reservation {
 
     @Id
@@ -23,18 +24,24 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonIgnore
+    @JsonBackReference
     private AppUser user;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+
+    @Column(name = "price")
+    private long totalPrice;
+
+    @Column(name = "number_of_tickets")
+    private int numberOfTickets;
+
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Many reservations can belong to the same showtime
+    @ManyToOne(fetch = FetchType.EAGER) // EAGER so showtime is fetched immediately
     @JoinColumn(name = "showtime_id", nullable = false)
-    @JsonMerge
+    @JsonIgnoreProperties("reservations") // don’t serialize reservations inside showtime
     private Showtime showtime;
-
 }
