@@ -69,8 +69,6 @@ public class MovieService {
                 .orElseThrow(() -> new ResourceNotFoundException("Movie not found"));
     }
 
-
-
     @Transactional
     public void deleteMovieByTitle(String title) {
         Movie movie = movieRepository.findByTitle(title)

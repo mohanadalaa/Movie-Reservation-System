@@ -35,7 +35,6 @@ public class Showtime {
     private String startTime;
 
     @Column(name="end_time",nullable = true)
-    @JsonIgnore
     private String endTime;
 
     @Column(nullable = false)
@@ -44,6 +43,10 @@ public class Showtime {
     @Column(name = "capacity")
     @JsonIgnore
     private int capacity;
+
+    @Column(name="status")
+    @Enumerated(EnumType.STRING)
+    private ShowtimeStatus showtimeStatus;
 
     @Column(name = "occupied_capacity")
     @JsonIgnore
@@ -56,7 +59,8 @@ public class Showtime {
     @JsonIgnore
     private List<Reservation> reservations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "showtime", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "showtime", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JsonIgnore
     private List<Seat> seats;
 
 }

@@ -1,18 +1,13 @@
 package system.movie_reservation_system.Entities.MovieEntity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonMerge;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jdk.jfr.Name;
 import lombok.Data;
 import system.movie_reservation_system.Entities.ShowTimes.Showtime;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +39,6 @@ public class Movie {
     private int durationMinutes;
 
     @Column(name = "poster_url", nullable = true)
-    @JsonIgnore
     private String posterUrl;
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -12,17 +12,17 @@ import system.movie_reservation_system.Services.TheaterServices.ShowtimeService;
 
 import java.util.List;
 @RestController
-@RequestMapping("/api/user/showimes")
+@RequestMapping("/api/user/showtimes")
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN', 'ROLE_DEV')")
 public class UserShowtimeController {
     private final ShowtimeService showtimeService;
 
-    @GetMapping("/{date}")
+    @GetMapping("date/{date}")
     public List<Showtime> getShowTimesByDate(@PathVariable String date){
         return showtimeService.getShowTimesByDate(date);
     }
-    @GetMapping("/{movie_title}")
+    @GetMapping("title/{movie_title}")
     public List<Showtime> getShowtimeByMovieTitle(@PathVariable String movie_title) {
         return showtimeService.getShowTimesByMovieTitle(movie_title);
     }

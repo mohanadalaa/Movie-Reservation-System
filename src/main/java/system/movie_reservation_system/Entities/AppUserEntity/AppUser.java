@@ -30,6 +30,7 @@ public class AppUser implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @Column(unique = true,
@@ -37,7 +38,6 @@ public class AppUser implements UserDetails {
             updatable = false,
             name = "public_user_id"
     )
-    @JsonIgnore
     private UUID publicId = UUID.randomUUID();;
 
     @Column(nullable = false,

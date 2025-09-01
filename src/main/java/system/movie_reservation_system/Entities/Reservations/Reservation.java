@@ -1,16 +1,19 @@
 package system.movie_reservation_system.Entities.Reservations;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonMerge;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import system.movie_reservation_system.Entities.AppUserEntity.AppUser;
+import system.movie_reservation_system.Entities.ShowTimes.Seat;
 import system.movie_reservation_system.Entities.ShowTimes.Showtime;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -44,4 +47,8 @@ public class Reservation {
     @JoinColumn(name = "showtime_id", nullable = false)
     @JsonIgnoreProperties("reservations") // don’t serialize reservations inside showtime
     private Showtime showtime;
+
+    // One reservation can have many seats
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
+    private List<Seat> seats = new ArrayList<>();
 }

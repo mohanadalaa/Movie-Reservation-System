@@ -8,9 +8,10 @@ import system.movie_reservation_system.Entities.AppUserEntity.AppUser;
 import system.movie_reservation_system.Entities.AppUserEntity.AppUserRole;
 import system.movie_reservation_system.Exception.ResourceNotFoundException;
 import system.movie_reservation_system.Repositories.UserRepository;
-import system.movie_reservation_system.Services.UserServices.DatabaseService;
+
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,14 +22,17 @@ public class AdminService {
 
     public List<AppUser> getUsers(){
         return userRepository.findByRole(AppUserRole.ROLE_USER);
+    }
+    public void deleteUser(UUID userId){
+        userRepository.deleteByPublicId(userId);
+    }
 
-    }
-    public void deleteUser(long userId){
-        userRepository.deleteById(userId);
+    public AppUser getUser(UUID publicUserId) {
+        return userRepository.findByPublicIdAndRole(publicUserId,AppUserRole.ROLE_USER)
+                .orElseThrow(() -> new ResourceNotFoundException("User With Id :"+publicUserId+" IS Not Found"));
     }
 
-    public AppUser getUser(long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User With Id :"+userId+" IS Not Found"));
-    }
+    public AppUser getUserByUsername(String username) {
+        return userRepository.findByUsernameAndRole(username,AppUserRole.ROLE_USER)
+                .orElseThrow(() -> new ResourceNotFoundException("User: "+username+" not found"));    }
 }

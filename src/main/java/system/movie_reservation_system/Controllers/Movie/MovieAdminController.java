@@ -19,6 +19,8 @@ import java.util.Map;
 public class MovieAdminController {
     private final MovieService movieService;
 
+    //Create
+    //  http://localhost:8080/api/admin/movies
     @PostMapping
     public Map<String, Object> addMovie(@RequestParam String title,
                           @RequestParam String description,
@@ -37,11 +39,14 @@ public class MovieAdminController {
                 .build().getResponse();
     }
 
+    //Read
+    //  http://localhost:8080/api/admin/movies/{title}
     @GetMapping("/{title}")
     public Movie getMovie(@PathVariable String title) {
         return movieService.findMovieByTitle(title);
     }
-
+    //Delete
+    //  http://localhost:8080/api/admin/movies/{title}
     @DeleteMapping("/{title}")
     public Map<String, Object> deleteMovie(@PathVariable String title) {
         movieService.deleteMovieByTitle(title);
@@ -52,11 +57,16 @@ public class MovieAdminController {
                 .add("title", title)
                 .build().getResponse();
     }
+
+    //Read By Genre
+    //  http://localhost:8080/api/admin/movies/genre/{genre}
     @GetMapping("/genre/{genre}")
     public List<Movie> getMoviesByGenre(@PathVariable String genre) {
         Genre genreEnum = Genre.valueOf(genre.toUpperCase());
         return movieService.getMoviesByGenre(genreEnum);
     }
+
+
 
     @PatchMapping("/{title}")
     public Map<String, Object> updateMoviePartial(@PathVariable String title, @RequestBody Map<String, Object> updates) {

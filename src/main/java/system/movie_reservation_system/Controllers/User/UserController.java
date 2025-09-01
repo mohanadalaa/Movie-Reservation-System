@@ -6,7 +6,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import system.movie_reservation_system.Entities.AppUserEntity.AppUser;
 import system.movie_reservation_system.Entities.AppUserEntity.AppUserDisplay;
-import system.movie_reservation_system.Exception.ResourceNotFoundException;
 import system.movie_reservation_system.Exception.ResponseMap;
 import system.movie_reservation_system.Services.UserServices.UserService;
 import system.movie_reservation_system.Security.JwtUtil;

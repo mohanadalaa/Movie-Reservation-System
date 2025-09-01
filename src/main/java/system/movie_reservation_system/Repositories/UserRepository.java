@@ -10,12 +10,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<AppUser, Long> {
-    Optional<AppUser> findByUsername(String username);
+    Optional<AppUser> findByUsernameAndRole(String username,AppUserRole role);
     Optional<AppUser> findByEmail(String email);
     List<AppUser> findByRole(AppUserRole role);
+    Optional<AppUser> findByPublicIdAndRole(UUID publicId,AppUserRole role);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
     Optional<AppUser> findByPublicId(UUID id);
     Optional<AppUserDisplay> findProjectedByPublicId(UUID id);
-
+    void deleteByPublicId(UUID id);
 }

@@ -9,6 +9,7 @@ import system.movie_reservation_system.Exception.ResourceNotFoundException;
 import system.movie_reservation_system.Repositories.UserRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +22,8 @@ public class DevService {
     }
 
     @Transactional
-    public AppUser promoteToAdmin(long userId) {
-        AppUser appUser = userRepository.findById(userId)
+    public AppUser promoteToAdmin(UUID userId) {
+        AppUser appUser = userRepository.findByPublicId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User Not Found With Id: " + userId));
 
         if (appUser.getRole() == AppUserRole.ROLE_ADMIN) {
@@ -32,8 +33,8 @@ public class DevService {
        return userRepository.save(appUser);
     }
     @Transactional
-    public void deleteUserOrAdmin(long userId) {
-        AppUser appUser = userRepository.findById(userId)
+    public void deleteUserOrAdmin(UUID userId) {
+        AppUser appUser = userRepository.findByPublicId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User Not Found With ID: " + userId));
         if (appUser.getRole().equals(AppUserRole.ROLE_DEV)){
               throw new ResourceNotFoundException("Invalid Move Smart.....");
@@ -41,8 +42,8 @@ public class DevService {
         userRepository.delete(appUser);
     }
 
-    public AppUser demoteToUser(long userId) {
-        AppUser appUser = userRepository.findById(userId)
+    public AppUser demoteToUser(UUID userId) {
+        AppUser appUser = userRepository.findByPublicId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User Not Found With Id: " + userId));
 
         if (appUser.getRole() == AppUserRole.ROLE_USER) {
@@ -50,5 +51,16 @@ public class DevService {
         }
         appUser.setRole(AppUserRole.ROLE_USER);
         return userRepository.save(appUser);
+    }
+
+    public AppUser getAdmin(UUID adminId){
+        return userRepository.findByPublicIdAndRole(adminId,AppUserRole.ROLE_ADMIN)
+        .orElseThrow(() -> new ResourceNotFoundException("Admin Not Found With Id: " + adminId));
+
+    }
+
+    public AppUser getAdminByUsername(String username) {
+        return userRepository.findByUsernameAndRole(username,AppUserRole.ROLE_ADMIN)
+                .orElseThrow(() -> new ResourceNotFoundException("Admin:"+username+" not found"));
     }
 }

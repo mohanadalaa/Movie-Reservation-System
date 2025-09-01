@@ -10,6 +10,7 @@ import system.movie_reservation_system.Services.AdminServices.AdminService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/admin/users")
@@ -26,13 +27,21 @@ public class AdminController {
     //Read
     //  http://localhost:8080/api/admin/users/{user_id}
     @GetMapping("/{user_id}")
-    public AppUser getUser(@PathVariable long user_id) {
+    public AppUser getUser(@PathVariable UUID user_id) {
         return adminService.getUser(user_id);
     }
+
+    //  http://localhost:8080/api/users/{username}
+    @GetMapping("username/{username}")
+    public AppUser getUserByUsername(@PathVariable String username){
+        return adminService.getUserByUsername(username);
+    }
+
+
     //Delete
     //  http://localhost:8080/api/admin/users/{user_id}
     @DeleteMapping("/{user_id}")
-    public Map<String, Object> deleteUser(@PathVariable long user_id){
+    public Map<String, Object> deleteUser(@PathVariable UUID user_id){
         adminService.deleteUser(user_id);
         return new ResponseMap.Builder()
                 .status("Account Has Been Deleted Successfully")

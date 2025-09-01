@@ -29,6 +29,8 @@ public class RegistrationService implements UserDetailsService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
+
+
     // POST http://localhost:8080/api/register
     @Transactional
     public AppUser createUser(String username, String email, String rawPassword) {

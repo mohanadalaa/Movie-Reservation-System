@@ -13,17 +13,22 @@ import system.movie_reservation_system.Services.TheaterServices.ShowtimeService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/user/showtime/seats")
+@RequestMapping("/api/user/showtimes/{showtime_id}/seats")
 @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN', 'ROLE_DEV')")
 @RequiredArgsConstructor
 public class UserSeatController {
     private final ShowtimeService showtimeService;
     private final SeatService seatService;
 
-    @GetMapping("/{showtime_id}")
+    @GetMapping
     public List<Seat> getAvailableSeatsForShowtime(@PathVariable long showtime_id){
-        return seatService.getAvailableSeatsForShowTime(showtime_id);
-    }
+        System.out.println("=== CONTROLLER DEBUG ===");
+        System.out.println("Controller called with ID: " + showtime_id);
 
+        List<Seat> result = seatService.getAvailableSeatsForShowTime(showtime_id);
+        System.out.println("Controller got: " + result.size() + " seats");
+
+        return result;
+    }
 
 }
