@@ -2,7 +2,6 @@ package system.movie_reservation_system.Entities.AppUserEntity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonMerge;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -38,7 +37,7 @@ public class AppUser implements UserDetails {
             updatable = false,
             name = "public_user_id"
     )
-    private UUID publicId = UUID.randomUUID();;
+    private UUID publicId ;
 
     @Column(nullable = false,
             unique = true,

@@ -3,6 +3,7 @@ package system.movie_reservation_system.Services.TheaterServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import system.movie_reservation_system.Entities.AppUserEntity.AppUser;
 import system.movie_reservation_system.Entities.Reservations.Reservation;
 import system.movie_reservation_system.Entities.ShowTimes.Seat;
@@ -41,14 +42,8 @@ public class SeatService {
         return seatRepository.saveAll(seats);
     }
 
-    // Method that takes Long ID (for your controller)
     public List<Seat> getAvailableSeatsForShowTime(Long showtimeId) {
         return seatRepository.findByShowtime_ShowtimeIdAndReservedFalse(showtimeId);
-    }
-
-    // Method that takes Showtime object (for your reservation service)
-    public List<Seat> getAvailableSeatsForShowTime(Showtime showtime) {
-        return seatRepository.findAvailableSeatsByShowtime(showtime);
     }
 
     public void validateSeat(Showtime showtime, List<String> seats) {
@@ -75,10 +70,28 @@ public class SeatService {
             Seat seat = seatMap.get(requestedSeatNumber);
             seat.setReserved(true);
             seat.setReservedByUserId(user.getPublicId());
-            //TODO : Save the reservation before using it
-          //  seat.setReservation(reservation);
+            seat.setReservation(reservation);
             reservedSeats.add(seat);
         }
         reservation.setSeats(reservedSeats);
     }
+
+    @Transactional
+    public void freeTheSeats(Reservation reservation, Showtime showtime) {
+        List<Seat> showtimeSeats = showtime.getSeats();
+
+        Map<String, Seat> seatMap = showtimeSeats.stream()
+                .collect(Collectors.toMap(Seat::getSeatNumber, seat -> seat));
+
+        for (Seat reservedSeat : reservation.getSeats()) {
+            Seat seat = seatMap.get(reservedSeat.getSeatNumber());
+            if (seat != null) { // safety check
+                seat.setReserved(false);
+                seat.setReservedByUserId(null);
+                seat.setReservation(null);
+            }
+        }
+        reservation.setSeats(null);
+    }
+
 }

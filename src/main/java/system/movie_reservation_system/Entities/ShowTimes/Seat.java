@@ -28,6 +28,7 @@ public class Seat {
     private Reservation reservation;
 
     @Column(name = "public_user_id")
+    @JsonIgnore
     private UUID reservedByUserId;
 
 }

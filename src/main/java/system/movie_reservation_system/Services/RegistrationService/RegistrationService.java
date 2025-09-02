@@ -46,9 +46,15 @@ public class RegistrationService implements UserDetailsService {
         if (rawPassword.length() < 3) {
             throw new ResourceNotFoundException("Password Must Be At Least 8 Characters");
         }
+        UUID publicId = UUID.randomUUID();
+        while(userRepository.existsByPublicId(publicId)){
+            publicId = UUID.randomUUID();
+        }
+
         AppUser user = new AppUser();
         user.setUsername(username);
         user.setEmail(email);
+        user.setPublicId(publicId);
         user.setPassword(passwordEncoder.encode(rawPassword));
         user.setRole(AppUserRole.ROLE_USER);
         userRepository.save(user);

@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import system.movie_reservation_system.Entities.AppUserEntity.AppUser;
 import system.movie_reservation_system.Entities.AppUserEntity.AppUserDisplay;
 import system.movie_reservation_system.Entities.AppUserEntity.AppUserRole;
+import system.movie_reservation_system.Entities.Reservations.Reservation;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,4 +20,5 @@ public interface UserRepository extends JpaRepository<AppUser, Long> {
     Optional<AppUser> findByPublicId(UUID id);
     Optional<AppUserDisplay> findProjectedByPublicId(UUID id);
     void deleteByPublicId(UUID id);
+    boolean existsByPublicId(UUID publicId);
 }

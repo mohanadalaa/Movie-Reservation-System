@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonMerge;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 import system.movie_reservation_system.Entities.MovieEntity.Movie;
 import system.movie_reservation_system.Entities.Reservations.Reservation;
@@ -35,13 +36,15 @@ public class Showtime {
     private String startTime;
 
     @Column(name="end_time",nullable = true)
+    @JsonIgnore
     private String endTime;
 
     @Column(nullable = false)
+
     private long ticketPrice;
 
     @Column(name = "capacity")
-    @JsonIgnore
+
     private int capacity;
 
     @Column(name="status")
@@ -49,8 +52,9 @@ public class Showtime {
     private ShowtimeStatus showtimeStatus;
 
     @Column(name = "occupied_capacity")
-    @JsonIgnore
+    @Min(0) // javax.validation.constraints.Min
     private int occupiedCapacity;
+
 
     @Column(name = "hall_id")
     private int hallNumber;

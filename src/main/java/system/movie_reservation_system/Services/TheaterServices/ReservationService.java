@@ -29,36 +29,30 @@ public class ReservationService {
     private final SeatService seatService;
 
 
-
-    @Transactional
     public Reservation saveReservation(UUID userId, long showtimeId , List<String> seats){
         AppUser user = userService.getAppUserById(userId);
         Showtime showtime = showtimeService.getShowTimeById(showtimeId);
 
+        if (reservationRepository.existsByUserAndShowtime(user,showtime)){
+            throw new ResourceNotFoundException("Reservation Already Exists If You Wish To Continue Please Edit It");
+        }
         int ticketCount = seats.size();
         int newOccupiedCapacity = showtime.getOccupiedCapacity()+ticketCount;
         if ( newOccupiedCapacity > showtime.getCapacity()) {
             throw new ResourceNotFoundException("NO VALID SEATS FOR THIS TICKET COUNT");
         }
-
         seatService.validateSeat(showtime,seats);
 
-
-//        if (reservationRepository.existsByUserAndShowtime(user,showtime)){ //reservation already exists just edit it lil bro
-//            return editReservation(user,showtime,ticketCount);
-//        }
-        //showtime.setOccupiedCapacity(newOccupiedCapacity);
         Reservation reservation = new Reservation();
         seatService.reserveSeats(user, reservation,showtime,seats);
+        showtime.setOccupiedCapacity(newOccupiedCapacity);
         reservation.setShowtime(showtime);
         reservation.setUser(user);
         reservation.setStatus(ReservationStatus.ACTIVE);
         reservation.setCreatedAt(LocalDateTime.now());
         reservation.setNumberOfTickets(ticketCount);
         reservation.setTotalPrice(ticketCount*showtime.getTicketPrice());
-      //  return reservationRepository.save(reservation);
-        System.out.println("returning null");
-        return null;
+        return reservationRepository.save(reservation);
     }
 
     @Transactional
@@ -79,14 +73,25 @@ public class ReservationService {
     }
 
     @Transactional
-    public String deleteReservationForUser(long id) {
-        Reservation reservation = reservationRepository.findById(id).
+    public Reservation deleteReservationForUser(UUID userId,long reservationId) {
+        System.out.println("First");
+        AppUser user = userService.getAppUserById(userId);
+        Reservation reservation = reservationRepository.findById(reservationId).
                 orElseThrow(() -> new ResourceNotFoundException("Reservation Not Found"));
+        if (!(user.getReservations().contains(reservation))){
+            throw new ResourceNotFoundException("Invalid Deletion");
+        }
+
         Showtime showtime = reservation.getShowtime();
+        seatService.freeTheSeats(reservation,showtime);
+        showtime.getReservations().remove(reservation);
+        reservation.setShowtime(null);
+        reservation.setTotalPrice(0);
+        reservation.setStatus(ReservationStatus.CANCELLED);
         showtime.setOccupiedCapacity( showtime.getOccupiedCapacity() - reservation.getNumberOfTickets());
         showtimeService.saveShowtime(showtime);
-        reservationRepository.deleteById(id);
-        return "DELETED SUCCESSFULLY!!";
+        reservationRepository.delete(reservation);
+        return reservation;
     }
 
     public Reservation getReservationByIdAndUser(long reservationId, UUID userId) {

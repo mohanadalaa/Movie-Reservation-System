@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import system.movie_reservation_system.Entities.MovieEntity.Genre;
+
 import system.movie_reservation_system.Entities.MovieEntity.Movie;
 import system.movie_reservation_system.Entities.ShowTimes.Seat;
 import system.movie_reservation_system.Entities.ShowTimes.Showtime;
-import system.movie_reservation_system.Entities.ShowTimes.ShowtimeDTO;
+
 import system.movie_reservation_system.Entities.ShowTimes.ShowtimeStatus;
 import system.movie_reservation_system.Exception.ResourceNotFoundException;
 import system.movie_reservation_system.Repositories.ShowtimeRepository;
@@ -84,9 +84,9 @@ public class ShowtimeService {
 
         LocalTime showStartTime = LocalTime.parse(startTime);
         LocalTime showEndTime = showStartTime.plusMinutes(movie.getDurationMinutes());
+        showEndTime = showEndTime.plusMinutes(20); //20-min break between each showtime
 
         hallTimeValidations(hallId,date,showEndTime.toString(),startTime);
-
         Showtime showtime = new Showtime();
         showtime.setMovie(movie);
         showtime.setCapacity(capacity);
